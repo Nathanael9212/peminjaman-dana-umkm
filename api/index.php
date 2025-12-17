@@ -1,18 +1,14 @@
 <?php
 
-// Create bootstrap/cache directory if not exists
-$cacheDir = __DIR__ . '/../bootstrap/cache';
-if (!is_dir($cacheDir)) {
-    @mkdir($cacheDir, 0755, true);
-}
+define('LARAVEL_START', microtime(true));
 
-// Remove all cached files to prevent binding errors
-$files = glob($cacheDir . '/*.php');
-if ($files) {
-    foreach ($files as $file) {
-        @unlink($file);
-    }
-}
+// Load autoloader
+require __DIR__ . '/../vendor/autoload.php';
 
-// Forward to Laravel
-require __DIR__ . '/../public/index.php';
+// Bootstrap Laravel 11
+$app = require_once __DIR__ . '/../bootstrap/app.php';
+
+// Handle request
+$app->handleRequest(
+    Illuminate\Http\Request::capture()
+);
